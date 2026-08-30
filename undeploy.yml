@@ -1,0 +1,19 @@
+---
+- name: Un-deploy vms
+  hosts: vms
+  become: yes
+  tasks:
+    - name: Stop nginx
+      service:
+        name: nginx
+        state: stopped
+
+    - name: Remove nginx
+      apt:
+        name: nginx
+        state: absent
+
+    - name: Remove text
+      file:
+        path: /var/www/html/index.html
+        state: absent

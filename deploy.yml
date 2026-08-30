@@ -1,0 +1,29 @@
+---
+- name: Deploy webserver
+  hosts: vms
+  become: yes
+  tasks:
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: nginx set to port 8080
+      lineinfile:
+        path: /etc/nginx/sites-available/default
+        regexp: '^\s*listen 80'
+        line: '    listen 8080;'
+      notify: restart nginx
+
+    - name: Deploy text
+      copy:
+        content: "<h1>Hello World from SJSU-{{ vm_id }}</h1>"
+        dest: /var/www/html/index.html
+
+  handlers:
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted
+
